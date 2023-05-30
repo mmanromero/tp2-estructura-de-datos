@@ -1,5 +1,7 @@
 from random import randint
 
+#hola
+
 def chequear_flotante(numero_en_str):
     try:
         float(numero_en_str)
