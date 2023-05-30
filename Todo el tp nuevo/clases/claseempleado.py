@@ -1,4 +1,4 @@
-from funcionesextra import generar_cod
+from extras.funcionesextra import generar_cod
 from clasepersona import Persona
 from clasebalneario import Balneario
 

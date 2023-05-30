@@ -1,6 +1,6 @@
 from clasepersona import Persona
 from clasebalneario import Balneario
-from funcionesextra import chequear_flotante
+from extras.funcionesextra import chequear_flotante
 
 #asumo que los datos que me entran son STR de los inputs
 class Cliente(Persona):
