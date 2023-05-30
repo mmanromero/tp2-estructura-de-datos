@@ -1,4 +1,4 @@
-from funcionesextra import buscar_dni, extraer_persona
+from extras.funcionesextra import buscar_dni, extraer_persona
 from claseproducto import Carpa, Sombrilla
 from claseempleado import Empleado
 from clasereserva import Reserva
