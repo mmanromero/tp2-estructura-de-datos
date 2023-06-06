@@ -45,10 +45,11 @@ if validar==True:
                 4- Ver clientes adeudados
                 5- Visualizar disponibilidad de carpas
                 6- Visualizar disponibilidad de sombrillas
-                7- Salir
+                7- Visualizar reservas
+                8- Salir
                 Opción: """)
 
-        if choice=="7":
+        if choice=="8":
             break
 
         elif choice=="1":
@@ -298,6 +299,25 @@ if validar==True:
 
         elif choice=="6":
             balneario.ver_matriz("s")
+
+        elif choice=="7":
+            opciones=input("""Qué quiere visualizar?
+                        1-Lista reservas
+                        2-Grafico reservas
+                        3-Volver al menu principal
+                        Opción: """)
+            if opciones=="1":
+                balneario.ver_reserva()
+            elif opciones=="2":
+                balneario.ver_Grafico_Reservas()            
+            elif opciones=="3":
+                break
+            else:
+                print("La elección no era una opción.")
+        
+            finalización=input("Desea hacer algo más con las reservas? (ENTER para continuar, cualquier tecla para salir): ")
+            if finalización!="":
+                break
 
 
         decision=input("¿Desea continuar? (presione ENTER para continuar, y cualquier otra tecla para salir): ")
