@@ -1,5 +1,5 @@
 from clasepersona import Persona
-from clasebalneario import Balneario
+#from clasebalneario import Balneario
 from extras.funcionesextra import chequear_flotante
 
 #asumo que los datos que me entran son STR de los inputs
@@ -19,19 +19,19 @@ class Cliente(Persona):
 
 #CREAR OBJETO
 #devuelve true si logra cargarlo (necesita que le mandes los datos antes), false si no puede registrarlo
-    @staticmethod
-    def registrar_cliente(nombre_pedido, dni_pedido, sexo_pedido, numtel, numtarjeta, balneario:Balneario):
-        if (dni_pedido.isdigit()):
-            if int(dni_pedido) not in balneario.dicclientes.keys():
-                cl=Cliente(nombre_pedido,dni_pedido,sexo_pedido,numtel, numtarjeta)
-                balneario.dicclientes[int(dni_pedido)]=cl
-                return True
-            else:
-                print("Ese cliente ya se encuentra registrado.")
-        else:
-                print("El DNI ingresado no cumple con el formato requerido.")
-        print("Error! El cliente no fue registrado.")
-        return nombre_pedido, dni_pedido, sexo_pedido, numtel, numtarjeta
+    # @staticmethod
+    # def registrar_cliente(nombre_pedido, dni_pedido, sexo_pedido, numtel, numtarjeta, balneario:Balneario):
+    #     if (dni_pedido.isdigit()):
+    #         if int(dni_pedido) not in balneario.dicclientes.keys():
+    #             cl=Cliente(nombre_pedido,dni_pedido,sexo_pedido,numtel, numtarjeta)
+    #             balneario.dicclientes[int(dni_pedido)]=cl
+    #             return True
+    #         else:
+    #             print("Ese cliente ya se encuentra registrado.")
+    #     else:
+    #             print("El DNI ingresado no cumple con el formato requerido.")
+    #     print("Error! El cliente no fue registrado.")
+    #     return cl
 
 #MODIFICAR DATOS
 #en el diccionario, vas a buscar el dni, una vez que lo encontrás, desde ese empleado que encontraste haces empleado.cambiardatos()

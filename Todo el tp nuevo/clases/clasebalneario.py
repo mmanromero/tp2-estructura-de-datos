@@ -1,4 +1,4 @@
-from extras.funcionesextra import buscar_dni, extraer_persona
+from extras.funcionesextra import * 
 from claseproducto import Carpa, Sombrilla
 from claseempleado import Empleado
 from clasereserva import Reserva
@@ -17,10 +17,46 @@ class Balneario():
         self.m_carpas=[[Carpa() for i in range(6)] for i in range(4)]
         self.m_sombrillas=[[Sombrilla() for i in range(5)] for i in range(3)]
 
+
+    def registrar_cliente(self, nombre_pedido, dni_pedido, sexo_pedido, numtel, numtarjeta):
+        if (dni_pedido.isdigit()):
+            if int(dni_pedido) not in self.dicclientes.keys():
+                cl=Cliente(nombre_pedido,dni_pedido,sexo_pedido,numtel, numtarjeta)
+                self.dicclientes[int(dni_pedido)]=cl
+            else:
+                print("Ese cliente ya se encuentra registrado.")
+        else:
+                print("El DNI ingresado no cumple con el formato requerido.")
+        print("Error! El cliente no fue registrado.")
+        return cl
+
+    def cargar_empleado(self,nom_cargado, dni_cargado, sexo_cargado):
+        if int(dni_cargado) not in self.dicemps.keys():  
+            emp=Empleado(nom_cargado,dni_cargado,sexo_cargado)
+            self.dicemp[int(dni_cargado)]=emp
+            self.dicusuarios[emp.codemp]=emp.contra
+        else:
+            raise ValueError("Ese empleado ya fue cargado.")
+        
+
+    def cambiar_contraseña(self,empleado):
+        contraseña_antigua=input("Ingresar la contraseña anterior: ")
+        if contraseña_antigua==empleado.contra:
+            contraseña_nueva=input("Ingresar la nueva contraseña (5 caracteres mínimo): ")
+            while len(contraseña_nueva)<5:
+                contraseña_nueva=input("Contraseña inválida, vuelva a ingresarla (5 caracteres mínimo): ")
+            print("La nueva contraseña es: ", contraseña_nueva)
+            empleado.contra=contraseña_nueva
+            self.dicusuarios[empleado.codemp]=contraseña_nueva
+        else:
+            raise ValueError("La contraseña ingresada no coincide con la contraseña actual del empleado. No podrá modificarse.")
+
+
 #imprimo el nombre del Sistema de asignación de reservas
     def __str__(self) -> str:
         return "Bienvenido a {}".format(self.nombre)
     
+
 #busca info en un pickle, lo carga
     def leer_archivos(self,path):
         try:
