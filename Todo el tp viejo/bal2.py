@@ -7,6 +7,8 @@ from cliente import Cliente
 import datetime
 import pickle
 import csv
+import matplotlib.pyplot as plt
+
 
 #PARA ARRANCAR EL PROGRAMA Y PODER PROBARLO, ABRIR EL ARCHIVO USUARIOS CSV (AHÍ ESTÁN ANOTADAS LAS CONTRASEÑAS Y LOS CÓDIGOS DE EMPLEADOS)
 
@@ -286,7 +288,38 @@ class Balneario():
                 raise ValueError("La contraseña ingresada no coincide con la contraseña actual del empleado. No podrá modificarse.")
                 
        
+    def ver_reserva(balneario):
+            for reserva in balneario.reservas_vigentes.keys():
+                if balneario.reservas_vigentes[reserva].tipo_reserva == "c":
+                    print("Reserva carpa: ",balneario.reservas_vigentes[reserva])
+                else:
+                    print("Reserva sombrilla: ",balneario.reservas_vigentes[reserva])
 
+
+    def ver_Grafico_Reservas(balneario):
+            lista_cd=[]
+            lista_sd=[]
+            lista_c=[]
+            lista_s=[]
+            for reserva in balneario.reservas_vigentes.keys():
+                res=balneario.reservas_vigentes[reserva]
+                if balneario.reservas_vigentes[reserva].tipo_reserva == "c":
+                    lista_cd+=[balneario.reservas_vigentes[reserva].estadia]
+                    lista_c+=[balneario.reservas_vigentes[reserva].num_reserva]
+                else:
+                    lista_sd+=[balneario.reservas_vigentes[reserva].estadia]
+                    lista_s+=[balneario.reservas_vigentes[reserva].num_reserva]         
+            # print("Reserva carpa: ", lista_c, lista_cd)
+            # print("Reserva sombrilla: ", lista_s, lista_sd)
+            
+            plt.title("Catidad de dias asociados a cada reserva (verde=carpas / naranja=sombrillas)")
+            plt.xlabel("Codigo de reserva")
+            plt.ylabel("Cantidad de dias")
+            plt.bar(lista_c, lista_cd, color="green")
+            plt.bar(lista_s, lista_sd, color="orange")
+            plt.show()
+
+            return lista_cd, lista_c, lista_s, lista_sd  
 if __name__=="__main__":
     balneario=Balneario("Balneario Carilo")
 
