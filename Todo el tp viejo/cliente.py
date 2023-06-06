@@ -8,7 +8,7 @@ class Cliente(Persona):
         if type(num_tarjeta)!=str or len(num_tarjeta)!=16:
             raise ValueError("El número de tarjeta no cumple con el formato adecuado.")
         super().__init__(nombre, dni, sexo)
-        self.tel=int(tel)
+        self.tel=str(tel)
         self.num_tarjeta=int(num_tarjeta)
         self.deuda=0
 
@@ -17,6 +17,6 @@ class Cliente(Persona):
 
 
 if __name__=="__main__":
-    Cliente("juan", 34233564, "M", 1123334321, 1234567890123456)
+    Cliente("juan", 34233564, "M", 1234567890, 1234567890123456)
     
         
