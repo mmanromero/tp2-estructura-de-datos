@@ -19,25 +19,25 @@ class Cliente(Persona):
 
 #CREAR OBJETO
 #devuelve true si logra cargarlo (necesita que le mandes los datos antes), false si no puede registrarlo
-    def registrar_cliente(nombre_pedido, dni_pedido, sexo_pedido, numtel, numtarjeta):
-        try:
-            if (dni_pedido.isdigit()):
-                if int(dni_pedido) not in Balneario.dicclientes.keys():
-                    cl=Cliente(nombre_pedido,dni_pedido,sexo_pedido,numtel, numtarjeta)
-                    Balneario.dicclientes[int(dni_pedido)]=cl
-                    return True
-                else:
-                     raise ValueError("Ese cliente ya se encuentra registrado.")
+    @staticmethod
+    def registrar_cliente(nombre_pedido, dni_pedido, sexo_pedido, numtel, numtarjeta, balneario:Balneario):
+        if (dni_pedido.isdigit()):
+            if int(dni_pedido) not in balneario.dicclientes.keys():
+                cl=Cliente(nombre_pedido,dni_pedido,sexo_pedido,numtel, numtarjeta)
+                balneario.dicclientes[int(dni_pedido)]=cl
+                return True
             else:
-                 raise ValueError("El DNI ingresado no cumple con el formato requerido.")
-        except ValueError as e:
-            print("Error !", e, "El cliente no fue registrado.")
-            return False
+                print("Ese cliente ya se encuentra registrado.")
+        else:
+                print("El DNI ingresado no cumple con el formato requerido.")
+        print("Error! El cliente no fue registrado.")
+        return nombre_pedido, dni_pedido, sexo_pedido, numtel, numtarjeta
 
 #MODIFICAR DATOS
 #en el diccionario, vas a buscar el dni, una vez que lo encontrás, desde ese empleado que encontraste haces empleado.cambiardatos()
 #le pasás el tipo de dato que querés cambiar (números asociados a las opciones en el menú) y el valor cargado
 #corrobora la info que le llega, si lo cambia devuelve true y si no lo cambia False    
+    @staticmethod
     def cambiardatos(self, tipo_dato, nuevo_dato):
         if tipo_dato=="1":
             self.nombre=nuevo_dato
@@ -65,6 +65,7 @@ class Cliente(Persona):
         return carga
 
 #PAGAR
+    @staticmethod
     def saldar_deuda(self,monto_abonado):
         if self.deuda!=0:
             if chequear_flotante(monto_abonado):
@@ -80,5 +81,6 @@ class Cliente(Persona):
 
 
 #ELIMINAR OBJETO --> creemos que no es necesario eliminar a un cliente, sino que queden datos históricos por las dudas de quienes pasaron por el balneario
+    @staticmethod
     def eliminar_cliente():
         pass
