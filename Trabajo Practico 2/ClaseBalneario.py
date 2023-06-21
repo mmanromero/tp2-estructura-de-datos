@@ -13,21 +13,56 @@ import csv
 #PARA ARRANCAR EL PROGRAMA Y PODER PROBARLO, ABRIR EL ARCHIVO USUARIOS CSV (AHÍ ESTÁN ANOTADAS LAS CONTRASEÑAS Y LOS CÓDIGOS DE EMPLEADOS)
 
 class Balneario():
-    def __init__(self, nombre):         
-        self.nombre=nombre
-        self.dicemp=dict()
-        self.dicclientes=dict()
-        self.dicusuarios=dict()
-        self.reservas_vigentes=dict()
-        self.m_carpas=[[Carpa() for i in range(6)] for i in range(4)]
-        self.m_sombrillas=[[Sombrilla() for i in range(5)] for i in range(3)]
+    def __init__(self, nombre):
+        """
+        Esta clase representa un balneario y su constructor inicializa sus atributos.
+
+        Parámetros:
+        - nombre: Nombre del balneario (cadena de caracteres).
+        
+        Atributos:
+        - nombre: Nombre del balneario.
+        - dicemp: Diccionario de empleados, donde las claves son los DNIs de los empleados y los valores son objetos de la clase Empleado.
+        - dicclientes: Diccionario de clientes, donde las claves son los DNIs de los clientes y los valores son objetos de la clase Cliente.
+        - dicusuarios: Diccionario de usuarios, donde las claves son los códigos de empleado y los valores son contraseñas de acceso.
+        - reservas_vigentes: Diccionario de reservas vigentes, donde las claves son los números de reserva y los valores son objetos de la clase Reserva.
+        - m_carpas: Matriz de carpas, donde se almacenan objetos de la clase Carpa.
+        - m_sombrillas: Matriz de sombrillas, donde se almacenan objetos de la clase Sombrilla.
+        """
+        self.nombre = nombre
+        self.dicemp = dict()
+        self.dicclientes = dict()
+        self.dicusuarios = dict()
+        self.reservas_vigentes = dict()
+        self.m_carpas = [[Carpa() for i in range(6)] for i in range(4)]
+        self.m_sombrillas = [[Sombrilla() for i in range(5)] for i in range(3)]
+
 
 #imprimo el nombre del Sistema de asignación de reservas
     def __str__(self) -> str:
         return "Bienvenido a {}".format(self.nombre)
+    """
+    Método que devuelve una cadena de texto representando al balneario.
+
+    Retorna:
+    - Cadena de texto que muestra un mensaje de bienvenida al balneario con su nombre.
+    """
+    
 
 #busca info en un pickle, lo carga
     def leer_archivos(self,path):
+        """
+    Método para leer archivos utilizando la biblioteca pickle.
+
+    Argumentos:
+    - path: Ruta del archivo a leer.
+
+    Retorna:
+    - infobal: Datos del archivo leído.
+
+    Excepciones:
+    - FileNotFoundError: Se produce cuando el archivo no se encuentra en la ruta especificada.
+    """
         try:
             with open(path, "rb") as f:
                 infobal=pickle.load(f)
@@ -35,16 +70,40 @@ class Balneario():
         except FileNotFoundError as e:
             print("Error! El archivo no se encontró.")
 
+
+
 #hace persistir info del balneario en un pickle
     def cargar_archivos(self):
+        """
+    Método para guardar los datos del balneario en un archivo utilizando la biblioteca pickle.
+
+    Excepciones:
+    - FileNotFoundError: Se produce cuando no se encuentra el archivo.
+    """
         try:
             with open("archivobalneario.pkl", "wb") as f:
                 pickle.dump(self, f, protocol=pickle.HIGHEST_PROTOCOL)
         except FileNotFoundError:
             print("Error! El arcvhivo no se encontró.")
+    
 
 #carga y crea al emp (corrobora que no esté registrado ya) #LEVANTA ERROR SI NO ESTÁ REGISTRADO
     def cargar_empleado(self, nom_cargado, dni_cargado, sexo_cargado):
+        """
+    Método para cargar un empleado en el balneario.
+
+    Parámetros:
+    - nom_cargado: str, nombre del empleado.
+    - dni_cargado: str, DNI del empleado.
+    - sexo_cargado: str, sexo del empleado.
+
+    Excepciones:
+    - ValueError: Se produce cuando el DNI del empleado ya está registrado en el balneario.
+
+    Funcionalidad:
+    - Si el DNI del empleado no está registrado, se generará una contraseña para el empleado y se creará un objeto Empleado con los datos proporcionados. El código de empleado autogenerado se imprimirá por pantalla. El empleado se agregará al diccionario de empleados y al diccionario de usuarios del balneario.
+    - Si el DNI del empleado ya está registrado, se lanzará una excepción ValueError indicando que el empleado ya fue cargado.
+        """
         if int(dni_cargado) not in self.dicemp.keys():    
             contraseña=crear_contraseña_empleado()
             emp=Empleado(nom_cargado, dni_cargado, sexo_cargado, contraseña)
@@ -56,6 +115,29 @@ class Balneario():
 
 #crea y registra al cliente
     def registrar_cliente(self, nombre_pedido, dni_pedido, sexo_pedido, numtel, numtarjeta):
+        """
+    Método para registrar un cliente en el balneario.
+
+    Parámetros:
+    - nombre_pedido: str, nombre del cliente.
+    - dni_pedido: str, DNI del cliente.
+    - sexo_pedido: str, sexo del cliente.
+    - numtel: str, número de teléfono del cliente.
+    - numtarjeta: str, número de tarjeta del cliente.
+
+    Retorna:
+    - bool: True si el cliente fue registrado exitosamente, False en caso contrario.
+
+    Excepciones:
+    - ValueError: Se produce cuando el DNI ingresado no cumple con el formato requerido o cuando el cliente ya está registrado.
+
+    Funcionalidad:
+    - Se verifica que el DNI ingresado sea un valor numérico. Si es así, se verifica que el DNI no esté registrado previamente.
+    - Si el DNI cumple con las condiciones, se crea un objeto Cliente con los datos proporcionados y se agrega al diccionario de clientes del balneario.
+    - Si el DNI no cumple con el formato requerido, se lanza una excepción ValueError indicando el error.
+    - Si el cliente ya está registrado, se lanza una excepción ValueError indicando que el cliente ya se encuentra registrado.
+    - En caso de cualquier excepción, se imprime un mensaje de error y se retorna False.
+    """
         try:
             if (dni_pedido.isdigit()):
                 if int(dni_pedido) not in self.dicclientes.keys():
@@ -72,11 +154,43 @@ class Balneario():
 
 #busca el dni del cliente    
     def validar_cliente(self, dni_cliente):
+        """
+    Método para validar si un cliente está registrado en el balneario.
+
+    Parámetros:
+    - dni_cliente: str, DNI del cliente a validar.
+
+    Retorna:
+    - bool: True si el cliente está registrado, False en caso contrario.
+
+    Funcionalidad:
+    - Se define una función lambda llamada buscar_dni que verifica si el DNI dado se encuentra en el diccionario de clientes del balneario.
+    - Se llama a la función buscar_dni pasando el DNI convertido a entero.
+    - Si el DNI está presente en el diccionario de clientes, la función buscar_dni retornará True, indicando que el cliente está registrado.
+    - Si el DNI no está presente en el diccionario de clientes, la función buscar_dni retornará False, indicando que el cliente no está registrado.
+    """
         buscar_dni=lambda dni:True if dni in self.dicclientes.keys() else False
         return buscar_dni(int(dni_cliente))
 
 #pidey verifica la contraseña del emp
     def validar_contraseña(self, codemp_ingresado):
+        """
+    Método para validar la contraseña de un empleado registrado en el sistema.
+
+    Parámetros:
+    - codemp_ingresado: str, Código de empleado ingresado.
+
+    Retorna:
+    - bool: True si la contraseña es válida, False en caso contrario.
+
+    Funcionalidad:
+    - Verifica si el código de empleado ingresado se encuentra en el diccionario de usuarios del balneario.
+    - Si el código de empleado está presente, solicita al usuario ingresar la contraseña.
+    - Entra en un bucle hasta que la contraseña ingresada coincida con la contraseña asociada al código de empleado o se ingrese "0" para salir.
+    - Si se ingresa "0", retorna False indicando que la validación ha fallado.
+    - Si la contraseña coincide, retorna True indicando que la validación ha sido exitosa.
+    - Si el código de empleado no está presente en el diccionario de usuarios, muestra un mensaje de error y retorna False.
+    """
         if codemp_ingresado in self.dicusuarios.keys():
             contra=input("Ingrese su contraseña: ")
             while self.dicusuarios[codemp_ingresado]!=contra and contra!="0":
@@ -91,6 +205,17 @@ class Balneario():
 
 #carga un archivo csv de contraseñas para poder leerlo nosotros y tenerlo de backup
     def crear_backup_contraseñas(self):
+        """
+    Método para crear un archivo de respaldo de contraseñas de empleados.
+
+    Funcionalidad:
+    - Intenta abrir un archivo llamado 'usuarios.csv' en modo escritura.
+    - Define los nombres de los campos del archivo CSV como 'usuario' y 'contraseña'.
+    - Crea un escritor de CSV utilizando el diccionario de empleados y sus contraseñas.
+    - Escribe la fila de encabezado en el archivo CSV.
+    - Recorre cada empleado en el diccionario de empleados y escribe una fila en el archivo CSV con el código de empleado y la contraseña.
+    - Si ocurre un error al abrir el archivo, muestra un mensaje de error.
+    """
         try:
             with open('usuarios.csv', 'w', newline='') as csvfile:
                 fieldnames = ['usuario', 'contraseña']
@@ -103,6 +228,23 @@ class Balneario():
 
 #acción repetitiva --> busca matriz
     def matrizdetrabajo(self,tipo_reserva):
+        """
+    Método para obtener la matriz de trabajo según el tipo de reserva.
+
+    Parámetros:
+    - tipo_reserva: Tipo de reserva ("S" para sombrilla, "C" para carpa).
+
+    Funcionalidad:
+    - Verifica si el tipo de reserva es válido (solo se permite "S" o "C").
+    - Define una función lambda que retorna la matriz de carpas si el tipo de reserva es "C" y la matriz de sombrillas si es "S".
+    - Retorna la matriz de trabajo correspondiente al tipo de reserva.
+
+    Excepciones:
+    - Si el tipo de reserva no es válido, se lanza un ValueError.
+
+    Retorna:
+    - La matriz de trabajo según el tipo de reserva.
+        """
         if tipo_reserva.lower()=="s" or tipo_reserva.lower()=="c":
             matriz_correcta=lambda x: self.m_carpas if x=="C" else self.m_sombrillas
             return matriz_correcta(tipo_reserva.upper().strip())
