@@ -3,28 +3,33 @@ from PyQt5.QtCore import pyqtSignal, Qt
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QMessageBox
 from threading import Thread
 
-
+# Definición de la clase LoginWindow que hereda de QWidget
 class LoginWindow(QWidget):
-    register_signal = pyqtSignal()
-
-    def __init__(self):
+    register_signal = pyqtSignal() # Declaración de la señal register_signal
+    
+    def __init__(self): # Constructor de la clase
         super().__init__()
-        self.setWindowTitle("Inicio de sesión")
-        self.setup_ui()
-        self.login_success = False
+        self.setWindowTitle("Inicio de sesión")  # Configuración de la ventana   
+        self.setup_ui() # Configuración de la interfaz de usuario
+        self.login_success = False # Inicialización de la variable de estado de inicio de sesión
 
+    # Definición del método setup_ui
     def setup_ui(self):
+    # Creación de etiquetas y campos de entrada para el nombre de usuario y contraseña
         label_username = QLabel("Usuario:")
         self.lineedit_username = QLineEdit()
         label_password = QLabel("Contraseña:")
         self.lineedit_password = QLineEdit()
         self.lineedit_password.setEchoMode(QLineEdit.Password)
+    
+    # Creación de botones para iniciar sesión y registrarse
         button_login = QPushButton("Iniciar sesión")
         button_login.clicked.connect(self.login)
 
         button_register = QPushButton("Registrarse")
         button_register.clicked.connect(self.register)
 
+    # Configuración del diseño del formulario
         layout = QVBoxLayout()
         layout.addWidget(label_username)
         layout.addWidget(self.lineedit_username)
@@ -33,37 +38,52 @@ class LoginWindow(QWidget):
         layout.addWidget(button_login)
         layout.addWidget(button_register)
 
+    # Configuración del diseño principal de la ventana
         self.setLayout(layout)
 
+
+    # Definición del método login
     def login(self):
+    # Obtención del nombre de usuario y contraseña ingresados por el usuario
         username = self.lineedit_username.text()
         password = self.lineedit_password.text()
 
-        # Aquí puedes realizar la validación de la contraseña y el usuario
+    # Aquí puedes realizar la validación de la contraseña y el usuario
         if username == "admin" and password == "12345":
+        # Si las credenciales son correctas, se muestra un mensaje de inicio de sesión exitoso
             print("Inicio de sesión exitoso")
-            self.login_success = True
-            self.close()  # Cierra la ventana principal
+            self.login_success = True  # Marca el éxito del inicio de sesión
+            self.close()  # Cierra la ventana de inicio de sesión y regresa a la ventana principal
         else:
+        # Si las credenciales son incorrectas, se muestra un mensaje de error
             QMessageBox.warning(self, "Error", "Nombre de usuario o contraseña incorrectos.")
-            self.lineedit_password.setText("")  # Limpia el campo de contraseña
+            self.lineedit_password.setText("")  # Limpia el campo de contraseña para que el usuario pueda intentarlo nuevamente
 
+
+    # Método register
     def register(self):
+    # Emitir la señal register_signal
         self.register_signal.emit()
 
+# Método get_login_success
     def get_login_success(self):
+    # Retorna el valor de login_success
         return self.login_success
 
 
+
+# Definición de la clase RegistrationWindow que hereda de QWidget
 class RegistrationWindow(QWidget):
     def __init__(self):
-        super().__init__()
-        self.setWindowTitle("Registro")
-
+        super().__init__()  # Llamada al constructor de la clase padre para inicializar la instancia de QWidget
+        self.setWindowTitle("Registro")  # Establece el título de la ventana como "Registro"
+        # Creación de un objeto QLabel con el texto "¡Regístrate en otro lugar!"
         label_register = QLabel("¡Regístrate en otro lugar!")
+        # Creación de un objeto QVBoxLayout para organizar los elementos de la ventana de forma vertical
         layout = QVBoxLayout()
+        # Agrega el QLabel al QVBoxLayout utilizando el método addWidget
         layout.addWidget(label_register)
-
+        # Establece el QVBoxLayout como el diseño principal de la ventana utilizando el método setLayout
         self.setLayout(layout)
 
 

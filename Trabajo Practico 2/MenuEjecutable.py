@@ -3,39 +3,46 @@ from ClaseBalneario import *
 import matplotlib.pyplot as plt
 import pickle
 
-#Intentamos abrir el archivo con la información de backup para ejecutar el programa (si no se encuentra, crea un empleado)
+# Intentamos abrir el archivo con la información de backup para ejecutar el programa (si no se encuentra, crea un empleado)
 try:
-    with open("archivobalneario.pkl", "rb") as f:   #abro el pickle
-        balneario=pickle.load(f)
+    with open("archivobalneario.pkl", "rb") as f:   # Abro el archivo pickle en modo lectura binaria ("rb")
+        balneario = pickle.load(f)  # Cargo los datos del archivo en el objeto balneario
 except FileNotFoundError:
-        balneario=Balneario("Carpas y sombrillas")
-        balneario.cargar_empleado("Leandro Díaz", "21333333", "M")
+    # Si el archivo no se encuentra, se ejecuta este bloque
+    balneario = Balneario("Carpas y sombrillas")  # Creo un nuevo objeto Balneario con nombre "Carpas y sombrillas"
+    balneario.cargar_empleado("Leandro Díaz", "21333333", "M")  # Agrego un empleado al objeto balneario
         
-#Pedimos al empleado su código y contraseña para poder validarla
-us=input("Ingrese su código de empleado: ")
-validar= balneario.validar_contraseña(us)
-while validar==False:
-    decision=input("Desea ingresar otro usuario? (presione Enter, o si no, cualquier otra tecla para salir): ")
-    if decision =="":
-        us=input("Ingrese su código de empleado: ")
-        validar=balneario.validar_contraseña(us)
+# Pedimos al empleado su código y contraseña para poder validarla
+us = input("Ingrese su código de empleado: ")  # Solicitamos al empleado que ingrese su código
+validar = balneario.validar_contraseña(us)  # Validamos la contraseña ingresada
+
+while validar == False:
+    decision = input("Desea ingresar otro usuario? (presione Enter, o si no, cualquier otra tecla para salir): ")
+    if decision == "":
+        us = input("Ingrese su código de empleado: ")  # Solicitamos al empleado que ingrese su código nuevamente
+        validar = balneario.validar_contraseña(us)  # Validamos la contraseña ingresada
     else:
-        validar=""
+        validar = ""  # Si el empleado decide salir, se establece validar como una cadena vacía, lo que finaliza el bucle
 
-#Una vez que se valida la contraseña, se ingresa al Sistema de Balneario y se pide la cotización de los productos para el día
-if validar==True:
+# En este punto, se validaron tanto código y contraseña del empleado con éxito
+
+
+# Una vez que se valida la contraseña, se ingresa al Sistema de Balneario y se pide la cotización de los productos para el día
+if validar == True:
     print("Bienvenido al sistema de reservas del Balneario")
-    cotizacioncarpa=input("Antes de comenzar, ingrese la cotización de hoy para el precio por día de las carpas: ")
+    cotizacioncarpa = input("Antes de comenzar, ingrese la cotización de hoy para el precio por día de las carpas: ")
     while not(chequear_flotante(cotizacioncarpa)):
-        cotizacioncarpa=input("Formato inválido, ingrése el valor nuevamente: ")
-    cotizacionsombrilla=input("Ingrese la cotización de hoy para el precio por día de las sombrillas: ")
+        cotizacioncarpa = input("Formato inválido, ingrese el valor nuevamente: ")
+    cotizacionsombrilla = input("Ingrese la cotización de hoy para el precio por día de las sombrillas: ")
     while not(chequear_flotante(cotizacionsombrilla)):
-        cotizacionsombrilla=input("Formato inválido, ingrése el valor nuevamente: ")
-    cotizacionsombrilla=float(cotizacionsombrilla)
-    cotizacioncarpa=float(cotizacioncarpa)
+        cotizacionsombrilla = input("Formato inválido, ingrese el valor nuevamente: ")
+    cotizacionsombrilla = float(cotizacionsombrilla)
+    cotizacioncarpa = float(cotizacioncarpa)
 
-    comenzar=True
-    while comenzar==True:
+    comenzar = True
+    while comenzar == True:
+        # Aquí se realiza el resto de las operaciones dentro del sistema de reservas del balneario
+
 
 #Brindamos opciones al empleado
         choice=input("""¿Qué desea hacer?

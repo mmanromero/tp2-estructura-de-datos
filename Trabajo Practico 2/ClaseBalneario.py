@@ -253,6 +253,21 @@ class Balneario():
  
 #visualiza la matriz (0 y días restantes)
     def ver_matriz(self, tipo_reserva):
+        """
+    Método para visualizar la matriz de disponibilidad de carpas o sombrillas.
+
+    Parámetros:
+    - tipo_reserva: Tipo de reserva ("S" para sombrilla, "C" para carpa).
+
+    Funcionalidad:
+    - Obtiene la matriz correspondiente al tipo de reserva especificado.
+    - Recorre la matriz y muestra el estado de cada elemento.
+    - Los elementos sin reserva se representan con "D" (disponible).
+    - Los elementos con reserva se representan con el número de días restantes hasta su vencimiento.
+
+    Excepciones:
+    - Si el tipo de reserva no es válido, se lanza un ValueError.
+    """
         print("Al visualizar las matrices, la D representa disponibilidad y el número, los días que restan de ocupación.")
         matriz=self.matrizdetrabajo(tipo_reserva)
         for fila in range(len(matriz)):
@@ -267,6 +282,21 @@ class Balneario():
 
 #busca lugar en la matriz disponible (asignacion automática o por fila)
     def buscar_posicion_disponible(self, matriz, metodo_busqueda, num_fila=None):
+            """
+    Método para buscar una posición disponible en la matriz.
+
+    Parámetros:
+    - matriz: Matriz de objetos.
+    - metodo_busqueda: Método de búsqueda ("F" para búsqueda por fila, "A" para búsqueda aleatoria).
+    - num_fila: Número de fila (opcional, solo para búsqueda por fila).
+
+    Retorno:
+    - Tupla con la posición (fila, columna) de la reserva disponible, o None si no se encuentra ninguna.
+
+    Excepciones:
+    - Si el método de búsqueda no es válido, se lanza un ValueError.
+    - Si el número de fila no es válido, se lanza un ValueError.
+    """
             disponible=None
             if metodo_busqueda.lower()=="f":
                 if num_fila!=None and str(num_fila).isdigit():
@@ -290,8 +320,22 @@ class Balneario():
                 raise ValueError("El método de búsqueda ingresado no es válido.")
             return disponible
 
+
 #este precio despues se lo pasamos a la reserva que creemos
     def calcular_precio(self,reserva, precioxdia):
+        """
+    Método para calcular el precio de una reserva.
+
+    Parámetros:
+    - reserva: Objeto de la clase Reserva.
+    - precioxdia: Precio por día en formato de cadena.
+
+    Retorno:
+    - Precio total de la reserva.
+
+    Excepciones:
+    - Si el precio ingresado no cumple con el formato requerido, se lanza un ValueError.
+    """
         if chequear_flotante(precioxdia):
             precio=reserva.estadia*float(precioxdia)
             return precio
@@ -300,8 +344,26 @@ class Balneario():
 
 #le pasás el precio, el dni, el número de días, la fila que eligió(si eligió), y hace la reserva     
     def asignar_reserva(self,tipo_reserva,metodo, dias, dni_cliente,cotizacion_dia,fila_elegida=None):
-        if str(dni_cliente).isdigit():
-            if dni_cliente not in self.reservas_vigentes.keys():
+        """
+    Método para asignar una reserva.
+
+    Parámetros:
+    - tipo_reserva: Tipo de reserva (sombrella: "S" o carpa: "C").
+    - metodo: Método de búsqueda de posición disponible (fila: "F" o aleatorio: "A").
+    - dias: Número de días de estadía.
+    - dni_cliente: DNI del cliente como una cadena.
+    - cotizacion_dia: Cotización por día en formato de cadena.
+    - fila_elegida: Número de fila elegida (opcional) como una cadena.
+
+    Retorno:
+    - Objeto de la clase Reserva.
+
+    Excepciones:
+    - Si el DNI ingresado no es válido (no numérico), se lanza un ValueError.
+    - Si el cliente ya tiene una reserva a su nombre, se lanza un ValueError.
+    """
+        if str(dni_cliente).isdigit():  #verifico que el dni sea numerico
+            if dni_cliente not in self.reservas_vigentes.keys(): #veo si el cliente tiene una reserva a su nombre
                 matriz=self.matrizdetrabajo(tipo_reserva)
                 fila,columna=self.buscar_posicion_disponible(matriz,metodo,fila_elegida)
                 num_reserva=str(fila)+str(columna)+str(dni_cliente)
@@ -325,6 +387,17 @@ class Balneario():
 
 #viene el cliente y pide modificar su tiempo de estadia
     def modificar_estadia(self,dias_agregados, dni_cliente, precio_actual):
+        """
+    Método para modificar la estadía de una reserva.
+
+    Parámetros:
+    - dias_agregados: Número de días a agregar a la estadía.
+    - dni_cliente: DNI del cliente como una cadena.
+    - precio_actual: Precio actual por día en formato de cadena.
+
+    Excepciones:
+    - Si el cliente no tiene una reserva vigente a su nombre para modificar, se lanza un ValueError.
+    """
         if dni_cliente in self.reservas_vigentes.keys():
             reserva_modificada=self.reservas_vigentes[dni_cliente]
             reserva_modificada.estadia+=int(dias_agregados)
@@ -339,6 +412,16 @@ class Balneario():
 
 #con esta función, antes de cerrar el programa revisamos las matrices para ver si están vencidas, si hay algo vencido lo sacamos y ponemos None
     def revisar_matriz(self,tipo):
+       """
+    Método para revisar la matriz de trabajo y eliminar las reservas vencidas.
+
+    Parámetros:
+    - tipo: Tipo de reserva ("S" para sombrillas, "C" para carpas).
+
+    Comentarios:
+    - Si una reserva está vencida, se eliminará de la matriz y se removerá de las reservas vigentes.
+
+    """
        matriz=self.matrizdetrabajo(tipo)
        for fila in range(len(matriz)):
            for columna in range(len(matriz[fila])):
@@ -351,6 +434,20 @@ class Balneario():
 
 #le saca toda o parte de la deuda al cliente
     def cobrar(self, dni_cliente, monto_abonado):
+        """
+    Método para registrar el cobro de una deuda por parte de un cliente.
+
+    Parámetros:
+    - dni_cliente: DNI del cliente.
+    - monto_abonado: Monto abonado por el cliente.
+
+    Comentarios:
+    - Si el monto abonado es válido y mayor a cero, se registra el pago y se actualiza la deuda del cliente.
+    - Si el monto abonado supera la deuda actual del cliente, se genera un ValueError.
+    - Si el cliente no tiene deuda pendiente, se genera un ValueError.
+    - Si el cliente no está registrado, se genera un KeyError.
+
+    """
         if int(dni_cliente) in self.dicclientes.keys():
             if self.dicclientes[int((dni_cliente))].deuda!=0:
                 if chequear_flotante(monto_abonado):
@@ -368,6 +465,18 @@ class Balneario():
 
 #elimina al empleado que se pida desde el menú (el DNI que llega es un string)
     def eliminar_empleado(self,dni_recibido):
+        """
+    Método para eliminar un empleado del sistema.
+
+    Parámetros:
+    - dni_recibido: DNI del empleado a eliminar.
+
+    Comentarios:
+    - Si el DNI recibido es válido y se encuentra registrado, se elimina el empleado y se devuelve el objeto del empleado eliminado.
+    - Si el DNI recibido no corresponde a un empleado registrado, se genera un ValueError.
+    - Si el DNI recibido no cumple con el formato requerido, se genera un ValueError.
+
+    """
         if dni_recibido.isdigit():
             if int(dni_recibido) in self.dicemp.keys():
                 emp_eliminado=self.dicemp.pop(int(dni_recibido))
@@ -380,6 +489,24 @@ class Balneario():
 #le pasás el tipo de dato que querés cambiar (números asociados a las opciones en el menú) y el valor cargado
 #corrobora la info que le llega, si lo cambia devuelve true y si no lo cambia False
     def modificar_datos_cliente(self,dni_cliente,nuevo_dato,tipo_dato):
+        """
+    Método para modificar los datos de un cliente.
+
+    Parámetros:
+    - dni_cliente: DNI del cliente cuyos datos se van a modificar.
+    - nuevo_dato: Nuevo valor para el dato a modificar.
+    - tipo_dato: Tipo de dato a modificar (1: nombre, 2: sexo, 3: número de teléfono, 4: número de tarjeta).
+
+    Comentarios:
+    - Si el DNI del cliente está registrado en el sistema, se modifica el dato correspondiente según el tipo de dato especificado.
+    - Si el tipo de dato ingresado no es válido, se genera un ValueError.
+    - Si el cliente no se encuentra registrado, se genera un ValueError.
+    - Si el nuevo dato ingresado no cumple con los requerimientos, se genera un ValueError específico según el tipo de dato.
+
+    Retorna:
+    - True si la modificación se realizó correctamente.
+    - False si no se realizó la modificación debido a un ValueError.
+        """
         if int(dni_cliente) in self.dicclientes.keys():
             if tipo_dato=="1":
                 self.dicclientes[int(dni_cliente)].nombre=nuevo_dato
@@ -410,6 +537,21 @@ class Balneario():
 
 #para cambiar la contraseña del empleado
     def cambiar_contraseña(self, dni_empleado):
+        """
+    Método para cambiar la contraseña de un empleado.
+
+    Parámetros:
+    - dni_empleado: DNI del empleado cuya contraseña se va a cambiar.
+
+    Comentarios:
+    - Si el DNI del empleado no está registrado en el sistema, se genera un ValueError.
+    - Se solicita al usuario ingresar la contraseña anterior para verificar su validez.
+    - Si la contraseña anterior coincide con la contraseña actual del empleado, se solicita al usuario ingresar la nueva contraseña.
+    - La nueva contraseña debe tener al menos 5 caracteres.
+    - Se actualiza la contraseña del empleado y del usuario correspondiente en el diccionario dicemp y dicusuarios, respectivamente.
+    - Si la contraseña anterior ingresada no coincide con la contraseña actual del empleado, se genera un ValueError.
+
+    """
         if int(dni_empleado) not in self.dicemp.keys():
             raise ValueError("El empleado no se encuentra registrado.")
         else:
@@ -429,6 +571,17 @@ class Balneario():
     
 #función para poder visualizar las reservas vigentes       
     def ver_reserva(balneario):
+            """
+    Método para ver las reservas vigentes en el balneario.
+
+    Parámetros:
+    - balneario: Objeto balneario que contiene las reservas vigentes.
+
+    Comentarios:
+    - Se recorren las claves del diccionario de reservas vigentes.
+    - Para cada reserva, se verifica el tipo de reserva y se imprime en pantalla el tipo de reserva y los detalles de la misma.
+
+    """
             for reserva in balneario.reservas_vigentes.keys():
                 if balneario.reservas_vigentes[reserva].tipo_reserva == "c":
                     print("Reserva carpa: ",balneario.reservas_vigentes[reserva])
@@ -437,10 +590,26 @@ class Balneario():
 
 #
     def ver_Grafico_Reservas(balneario):
-            lista_cd=[]
-            lista_sd=[]
-            lista_c=[]
-            lista_s=[]
+            """
+    Método para visualizar un gráfico de las reservas vigentes en el balneario.
+
+    Parámetros:
+    - balneario: Objeto balneario que contiene las reservas vigentes.
+
+    Comentarios:
+    - Se crean listas para almacenar la cantidad de días y los códigos de reserva de las reservas de carpa y sombrilla.
+    - Se recorren las claves del diccionario de reservas vigentes.
+    - Para cada reserva, se obtienen los días de estadía y el código de reserva.
+    - Se agregan los datos a las listas correspondientes según el tipo de reserva.
+    - Se grafican las barras utilizando las listas de datos.
+    - Se muestra el gráfico.
+    - Se devuelven las listas de datos.
+
+    """
+            lista_cd = []  # Lista de cantidad de días de reservas de carpa
+            lista_sd = []  # Lista de cantidad de días de reservas de sombrilla
+            lista_c = []  # Lista de códigos de reserva de carpa
+            lista_s = []  # Lista de códigos de reserva de sombrilla
             for reserva in balneario.reservas_vigentes.keys():
                 res=balneario.reservas_vigentes[reserva]
                 if balneario.reservas_vigentes[reserva].tipo_reserva == "c":
@@ -473,25 +642,4 @@ if __name__=="__main__":
     print("El empleado eliminado es:",balneario.eliminar_empleado("22278723"))
     for i in balneario.dicemp.keys():
         print(balneario.dicemp[i])
-    #balneario.cargar_archivos()
-    #balneario.crear_backup_contraseñas()
-    # for i in balneario.dicclientes.keys():
-    #     print(i)
-    #     print(type(i))
-    #     print(balneario.dicclientes[i])
-    # try:
-    #    reserva=balneario.asignar_reserva("s",112,3,balneario.dicclientes[22222222])
-    # except ValueError as e:
-    #    print("Error!", e)
-
-#funciones para ver matrices andan bien !!
-    #balneario.ver_matriz("s")
-    #balneario.ver_matriz("c")
     
-    #print(reserva.vencimiento==datetime.datetime.now())
-    # try:
-    #     balneario.asignar_reserva("s", "f",8, 22222222,"0")
-
-    #     balneario.ver_matriz("s")
-    # except ValueError as e:
-    #     print("Error!", e)
