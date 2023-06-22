@@ -113,6 +113,7 @@ class Balneario():
         else:
             raise ValueError("Ese empleado ya fue cargado.")
 
+
 #crea y registra al cliente
     def registrar_cliente(self, nombre_pedido, dni_pedido, sexo_pedido, numtel, numtarjeta):
         """
@@ -171,37 +172,27 @@ class Balneario():
     """
         buscar_dni=lambda dni:True if dni in self.dicclientes.keys() else False
         return buscar_dni(int(dni_cliente))
+    
 
-#pidey verifica la contraseña del emp
-    def validar_contraseña(self, codemp_ingresado):
+    #validar  la contraseña y el codigo de empleado ingresados
+    def validar_contraseña(self, usuario, contraseña):
         """
-    Método para validar la contraseña de un empleado registrado en el sistema.
+    Método que valida la contraseña y el código de empleado ingresados.
 
     Parámetros:
-    - codemp_ingresado: str, Código de empleado ingresado.
+    - self: referencia al objeto actual de la clase.
+    - usuario: código de empleado ingresado.
+    - contraseña: contraseña ingresada.
 
     Retorna:
-    - bool: True si la contraseña es válida, False en caso contrario.
-
-    Funcionalidad:
-    - Verifica si el código de empleado ingresado se encuentra en el diccionario de usuarios del balneario.
-    - Si el código de empleado está presente, solicita al usuario ingresar la contraseña.
-    - Entra en un bucle hasta que la contraseña ingresada coincida con la contraseña asociada al código de empleado o se ingrese "0" para salir.
-    - Si se ingresa "0", retorna False indicando que la validación ha fallado.
-    - Si la contraseña coincide, retorna True indicando que la validación ha sido exitosa.
-    - Si el código de empleado no está presente en el diccionario de usuarios, muestra un mensaje de error y retorna False.
+    - True si el usuario y la contraseña coinciden con los registros almacenados en dicusuarios.
+    - False en caso contrario.
     """
-        if codemp_ingresado in self.dicusuarios.keys():
-            contra=input("Ingrese su contraseña: ")
-            while self.dicusuarios[codemp_ingresado]!=contra and contra!="0":
-                contra=input("Contraseña incorrecta.Vuelva a intentar (o presione 0 para salir): ")
-            if contra=="0":
-                return False
-            else:
-                return True
+        if usuario in self.dicusuarios.keys() and self.dicusuarios[usuario] == contraseña:
+            return True
         else:
-            print("Ese empleado no está registrado en el sistema.")
             return False
+
 
 #carga un archivo csv de contraseñas para poder leerlo nosotros y tenerlo de backup
     def crear_backup_contraseñas(self):
@@ -251,6 +242,7 @@ class Balneario():
         else:
             raise ValueError("Tipo de reserva inválido.")
  
+
 #visualiza la matriz (0 y días restantes)
     def ver_matriz(self, tipo_reserva):
         """
@@ -279,6 +271,7 @@ class Balneario():
                 else:
                     lista.append((reser.estado.vencimiento-datetime.datetime.now()).days)
             print(lista)
+
 
 #busca lugar en la matriz disponible (asignacion automática o por fila)
     def buscar_posicion_disponible(self, matriz, metodo_busqueda, num_fila=None):
@@ -342,6 +335,7 @@ class Balneario():
         else:
             raise ValueError("El precio ingresado no cumple con el formato requerido.")
 
+
 #le pasás el precio, el dni, el número de días, la fila que eligió(si eligió), y hace la reserva     
     def asignar_reserva(self,tipo_reserva,metodo, dias, dni_cliente,cotizacion_dia,fila_elegida=None):
         """
@@ -385,6 +379,7 @@ class Balneario():
         else:
             raise ValueError("El DNI ingresado no es válido.")
 
+
 #viene el cliente y pide modificar su tiempo de estadia
     def modificar_estadia(self,dias_agregados, dni_cliente, precio_actual):
         """
@@ -410,6 +405,7 @@ class Balneario():
         else:
             raise ValueError("Ese cliente no tiene una reserva vigente a su nombre para modificar.")
 
+
 #con esta función, antes de cerrar el programa revisamos las matrices para ver si están vencidas, si hay algo vencido lo sacamos y ponemos None
     def revisar_matriz(self,tipo):
        """
@@ -431,6 +427,7 @@ class Balneario():
                         dnicliente=carpasomb.estado.cliente.dni
                         carpasomb.estado==None
                         self.reservas_vigentes.pop(dnicliente)
+
 
 #le saca toda o parte de la deuda al cliente
     def cobrar(self, dni_cliente, monto_abonado):
@@ -463,6 +460,7 @@ class Balneario():
         else:
             raise KeyError("El cliente no se encuentra registrado.")            
 
+
 #elimina al empleado que se pida desde el menú (el DNI que llega es un string)
     def eliminar_empleado(self,dni_recibido):
         """
@@ -475,7 +473,6 @@ class Balneario():
     - Si el DNI recibido es válido y se encuentra registrado, se elimina el empleado y se devuelve el objeto del empleado eliminado.
     - Si el DNI recibido no corresponde a un empleado registrado, se genera un ValueError.
     - Si el DNI recibido no cumple con el formato requerido, se genera un ValueError.
-
     """
         if dni_recibido.isdigit():
             if int(dni_recibido) in self.dicemp.keys():
@@ -485,6 +482,7 @@ class Balneario():
                 raise ValueError("El DNI ingresado no se encuentra registrado.")
         else:
             raise ValueError("El DNI ingresado no cumple con el formato requerido.")
+
 
 #le pasás el tipo de dato que querés cambiar (números asociados a las opciones en el menú) y el valor cargado
 #corrobora la info que le llega, si lo cambia devuelve true y si no lo cambia False
@@ -535,33 +533,28 @@ class Balneario():
         else:
             raise ValueError("Ese cliente no se encuentra registrado.")
 
+
 #para cambiar la contraseña del empleado
     def cambiar_contraseña(self, dni_empleado):
         """
-    Método para cambiar la contraseña de un empleado.
+    Método que cambia la contraseña de un empleado registrado.
 
     Parámetros:
-    - dni_empleado: DNI del empleado cuya contraseña se va a cambiar.
+    - self: referencia al objeto actual de la clase.
+    - dni_empleado: DNI del empleado cuya contraseña se desea cambiar.
 
-    Comentarios:
-    - Si el DNI del empleado no está registrado en el sistema, se genera un ValueError.
-    - Se solicita al usuario ingresar la contraseña anterior para verificar su validez.
-    - Si la contraseña anterior coincide con la contraseña actual del empleado, se solicita al usuario ingresar la nueva contraseña.
-    - La nueva contraseña debe tener al menos 5 caracteres.
-    - Se actualiza la contraseña del empleado y del usuario correspondiente en el diccionario dicemp y dicusuarios, respectivamente.
-    - Si la contraseña anterior ingresada no coincide con la contraseña actual del empleado, se genera un ValueError.
+    Lanza:
+    - ValueError: si el DNI del empleado no se encuentra registrado o si la contraseña ingresada no coincide con la contraseña actual del empleado.
 
+    Retorna:
+    - None.
     """
         if int(dni_empleado) not in self.dicemp.keys():
             raise ValueError("El empleado no se encuentra registrado.")
         else:
             contraseña_antigua=input("Ingresar la contraseña anterior: ")
             if self.dicemp[int(dni_empleado)].contra==contraseña_antigua:
-                #contraseña_nueva=crear()
-                contraseña_nueva=input("Ingresar la nueva contraseña (5 caracteres mínimo): ")
-                while len(contraseña_nueva)<5:
-                    contraseña_nueva=input("Contraseña inválida, vuelva a ingresarla (5 caracteres mínimo): ")
-                print("La nueva contraseña es: ", contraseña_nueva)
+                contraseña_nueva=crear_contraseña_empleado()
                 self.dicemp[int(dni_empleado)].contra=contraseña_nueva
                 self.dicusuarios[self.dicemp[int(dni_empleado)].codemp]=contraseña_nueva
             else:
@@ -618,8 +611,6 @@ class Balneario():
                 else:
                     lista_sd+=[balneario.reservas_vigentes[reserva].estadia]
                     lista_s+=[balneario.reservas_vigentes[reserva].num_reserva]         
-            # print("Reserva carpa: ", lista_c, lista_cd)
-            # print("Reserva sombrilla: ", lista_s, lista_sd)
             plt.title("Catidad de dias asociados a cada reserva (verde=carpas / naranja=sombrillas)")
             plt.xlabel("Codigo de reserva")
             plt.ylabel("Cantidad de dias")
@@ -627,7 +618,6 @@ class Balneario():
             plt.bar(lista_s, lista_sd, color="orange")
             plt.show()
             return lista_cd, lista_c, lista_s, lista_sd  
-
 
 
 if __name__=="__main__":

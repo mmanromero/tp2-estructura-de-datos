@@ -1,23 +1,37 @@
 from random import randint
 
-# Función para crear una contraseña de empleado
 def crear_contraseña_empleado():
     """
-    Esta función solicita al usuario que ingrese una nueva contraseña para un empleado.
-    La contraseña debe tener al menos 5 caracteres.
-    Si la contraseña no cumple con el requisito, se le pedirá al usuario que ingrese nuevamente.
-    Devuelve la contraseña ingresada.
+    Función para crear una nueva contraseña para un empleado.
+
+    Retorna:
+    - La contraseña ingresada por el usuario, siempre y cuando tenga al menos 5 caracteres.
+
+    Acciones:
+    - Solicita al usuario que ingrese una nueva contraseña.
+    - Verifica que la contraseña tenga al menos 5 caracteres.
+    - Retorna la contraseña ingresada.
     """
-    contra = input("A continuación, ingresar su nueva contraseña (5 caracteres mínimo): ")
-    while len(contra) < 5:
-        contra = input("Contraseña inválida, vuelva a ingresarla (5 caracteres mínimo): ")
+    contra=input("A continuación, ingresar su nueva contraseña (5 caracteres mínimo): ")
+    while len(contra)<5:
+        contra=input("Contraseña inválida, vuelva a ingresarla (5 caracteres mínimo): ")
     return contra
 
-# Función para verificar si un número en formato de cadena es un número de punto flotante válido
 def chequear_flotante(numero_en_str):
     """
-    Esta función verifica si un número representado como una cadena de caracteres es un número de punto flotante válido.
-    Devuelve True si es válido, False si no lo es.
+    Función para verificar si un número en formato de cadena puede ser convertido a un número de punto flotante.
+
+    Parámetros:
+    - numero_en_str: número representado como una cadena de texto.
+
+    Retorna:
+    - True si el número puede ser convertido a un número de punto flotante.
+    - False en caso contrario.
+
+    Acciones:
+    - Intenta convertir el número a un número de punto flotante.
+    - Si la conversión es exitosa, retorna True.
+    - Si ocurre un ValueError durante la conversión, retorna False.
     """
     try:
         float(numero_en_str)
@@ -26,23 +40,32 @@ def chequear_flotante(numero_en_str):
     else:
         return True
 
-# Función para generar un código aleatorio de 5 dígitos
 def generar_cod():
     """
-    Esta función genera un código aleatorio de 5 dígitos.
-    Los dígitos están en el rango del 0 al 9.
-    Devuelve el código generado.
+    Función para generar un código aleatorio de 5 dígitos.
+
+    Retorna:
+    - Un código de 5 dígitos generado aleatoriamente.
+
+    Acciones:
+    - Genera un código de 5 dígitos aleatoriamente utilizando la función randint() del módulo random.
+    - Retorna el código generado.
     """
-    cod = ""
+    cod=""
     for i in range(5):
-        cod += str(randint(0, 9))
+        cod+=str(randint(0,9))
     return cod
 
-# Función para recorrer un diccionario e imprimir sus valores
 def recorrer_diccionario(diccionario):
     """
-    Esta función recorre un diccionario e imprime los valores correspondientes a cada clave.
-    Recibe como argumento el diccionario a recorrer.
+    Función para recorrer un diccionario e imprimir sus valores.
+
+    Parámetros:
+    - diccionario: diccionario a recorrer.
+
+    Acciones:
+    - Itera sobre las claves del diccionario.
+    - Imprime los valores correspondientes a cada clave.
     """
     for key in diccionario.keys():
         print(diccionario[key])
