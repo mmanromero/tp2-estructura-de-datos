@@ -4,6 +4,7 @@ from ClaseBalneario import Balneario
 from FuncionesAdicionales import chequear_flotante, recorrer_diccionario
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QPushButton, QMessageBox
 
+#PARA ARRANCAR EL PROGRAMA Y PODER PROBARLO, ABRIR EL ARCHIVO USUARIOS CSV (AHÍ ESTÁN ANOTADAS LAS CONTRASEÑAS Y LOS CÓDIGOS DE EMPLEADOS)
 
 try:
     with open("archivobalneario.pkl", "rb") as f:   #abro el pickle
